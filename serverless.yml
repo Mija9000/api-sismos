@@ -1,0 +1,32 @@
+service: api-sismos
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  timeout: 20
+  iam:
+    role: arn:aws:iam::214633547093:role/LabRole
+
+functions:
+  scrap:
+    handler: scrap_table.lambda_handler
+    events:
+      - http:
+          path: sismos
+          method: get
+
+package:
+  individually: true
+  include:
+    - scrap_table.py
+    - libs/**
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    useStaticCache: false
+    useDownloadCache: false
